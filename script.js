@@ -42,34 +42,52 @@ const count=document.getElementById("resultCount");
 const empty=document.getElementById("emptyMessage");
 
 function renderFiles(){
-  const query=search.value.toLowerCase().trim();
-  const results=documents.filter(file=>
-    (type.value==="all"||type.value===file.group)&&
-    (school.value==="all"||school.value===file.site)&&
+  const query=search.value.trim().toLowerCase();
+  const filtered=documents.filter(file=>
+    (type.value==="all"||file.group===type.value)&&
+    (school.value==="all"||file.site===school.value)&&
     [file.title,file.subtitle,file.site,file.group].join(" ").toLowerCase().includes(query)
   );
+
   rows.replaceChildren();
-  results.forEach((file,index)=>{
+  filtered.forEach(file=>{
     const anchor=document.createElement("a");
-    anchor.className="file-row";
     anchor.href=base+file.id+"/view";
-    anchor.target="_blank";anchor.rel="noopener noreferrer";
-    anchor.setAttribute("aria-label","Open "+file.title+" ("+file.site+") in a new tab");
-    const number=document.createElement("span");number.className="file-number";number.textContent=String(index+1).padStart(2,"0");
-    const titleBox=document.createElement("span");
-    const title=document.createElement("strong");title.className="file-title";title.textContent=file.title;
-    const sub=document.createElement("span");sub.className="file-description";sub.textContent=file.subtitle;
-    titleBox.append(title,sub);
-    const location=document.createElement("span");location.className="file-place";location.textContent=file.site;
-    const arrow=document.createElement("span");arrow.className="file-arrow";arrow.textContent="↗";arrow.setAttribute("aria-hidden","true");
-    anchor.append(number,titleBox,location,arrow);
+    anchor.target="_blank";
+    anchor.rel="noopener noreferrer";
+    anchor.className="file-row";
+    anchor.setAttribute("aria-label","Open "+file.title+" — "+file.site+" in a new tab");
+
+    const details=document.createElement("span");
+    const title=document.createElement("strong");
+    title.className="file-title";
+    title.textContent=file.title;
+    const description=document.createElement("span");
+    description.className="file-description";
+    description.textContent=file.subtitle;
+    details.append(title,description);
+
+    const location=document.createElement("span");
+    location.className="file-place";
+    location.textContent=file.site;
+    const arrow=document.createElement("span");
+    arrow.className="file-arrow";
+    arrow.textContent="↗";
+    arrow.setAttribute("aria-hidden","true");
+
+    anchor.append(details,location,arrow);
     rows.append(anchor);
   });
-  count.textContent=results.length+" of "+documents.length+" FILES";
-  empty.hidden=results.length!==0;
+
+  count.textContent=filtered.length+" of "+documents.length+" documents";
+  empty.hidden=filtered.length!==0;
 }
-const schoolQuery=new URLSearchParams(window.location.search).get("school");
-if(schoolQuery&&[...school.options].some(o=>o.value===schoolQuery))school.value=schoolQuery;
+
+const schoolParam=new URLSearchParams(window.location.search).get("school");
+if(schoolParam&&[...school.options].some(option=>option.value===schoolParam)){
+  school.value=schoolParam;
+}
+
 search.addEventListener("input",renderFiles);
 type.addEventListener("change",renderFiles);
 school.addEventListener("change",renderFiles);
