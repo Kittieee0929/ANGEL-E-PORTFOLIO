@@ -35,62 +35,70 @@ const documents = [
 ];
 
 
+
+const allowedPages=["overview","field-study","teaching","archive"];
+const pageNames={"overview":"Overview","field-study":"Field Study","teaching":"Teaching Work","archive":"Documents"};
+const views=[...document.querySelectorAll("[data-page-view]")];
+const navLinks=[...document.querySelectorAll("[data-page-link]")];
+const main=document.getElementById("main");
+function showPage(){
+  const requested=decodeURIComponent(location.hash.substring(1));
+  const page=allowedPages.includes(requested)?requested:"overview";
+  for(const view of views)view.hidden=view.dataset.pageView!==page;
+  for(const link of navLinks){
+    const current=link.dataset.pageLink===page;
+    if(current)link.setAttribute("aria-current","page");
+    else link.removeAttribute("aria-current");
+  }
+  document.title=pageNames[page]+" | Angel Marcelo Vidad";
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",showPage);
+showPage();
+
+const list=document.getElementById("documentList");
 const search=document.getElementById("docSearch");
-const grid=document.getElementById("documentGrid");
+const category=document.getElementById("categoryFilter");
+const school=document.getElementById("schoolFilter");
 const count=document.getElementById("docCount");
 const empty=document.getElementById("noDocuments");
-const more=document.getElementById("moreDocs");
-let activeFilter="all";
-let activeSchool="";
-let expanded=false;
-function renderDocuments(){
+function renderArchive(){
   const query=search.value.trim().toLowerCase();
-  const results=documents.filter(d=>
-    (activeFilter==="all"||d.group===activeFilter)&&
-    (!activeSchool||d.site===activeSchool)&&
+  const matches=documents.filter(d=>
+    (category.value==="all"||d.group===category.value)&&
+    (school.value==="all"||d.site===school.value)&&
     [d.title,d.subtitle,d.group,d.site].join(" ").toLowerCase().includes(query)
   );
-  grid.replaceChildren();
-  results.forEach(d=>{
-    const a=document.createElement("a");a.className="doc-card";
-    a.href=base+d.id+"/view";a.target="_blank";a.rel="noopener noreferrer";
-    a.setAttribute("aria-label","Open "+d.title+" — "+d.site+" (new tab)");
-    const top=document.createElement("div");top.className="doc-top";
-    const site=document.createElement("span");site.textContent=d.site;
-    const title=document.createElement("h3");title.textContent=d.title;
-    const subtitle=document.createElement("p");subtitle.textContent=d.subtitle;
-    const bottom=document.createElement("div");bottom.className="doc-bottom";
-    const type=document.createElement("span");type.textContent="View original "+d.kind;
-    const arrow=document.createElement("span");arrow.textContent="↗";
-    top.append(site);bottom.append(type,arrow);
-    a.append(top,title,subtitle,bottom);grid.append(a);
+  list.replaceChildren();
+  matches.forEach((d,i)=>{
+    const item=document.createElement("a");
+    item.className="document-row";
+    item.href=base+encodeURIComponent(d.id)+"/view";
+    item.target="_blank";
+    item.rel="noopener noreferrer";
+    item.setAttribute("aria-label","Open "+d.title+" ("+d.site+") in a new tab");
+    const index=document.createElement("span");index.className="document-index";index.textContent=String(i+1).padStart(2,"0");
+    const body=document.createElement("span");
+    const title=document.createElement("span");title.className="document-title";title.textContent=d.title;
+    const description=document.createElement("span");description.className="document-subtitle";description.textContent=d.subtitle;
+    body.append(title,description);
+    const site=document.createElement("span");site.className="document-site";site.textContent=d.site;
+    const arrow=document.createElement("span");arrow.className="document-arrow";arrow.textContent="↗";arrow.setAttribute("aria-hidden","true");
+    item.append(index,body,site,arrow);
+    list.append(item);
   });
-  count.textContent=results.length+" document"+(results.length===1?"":"s")+(activeSchool?" · "+activeSchool:"");
-  empty.hidden=results.length!==0;
-  const customized=activeFilter!=="all"||activeSchool!==""||query!=="";
-  grid.classList.toggle("expanded",expanded||customized);
-  more.hidden=customized||results.length<=7;
-  more.textContent=expanded?"Show fewer documents":"Show all "+results.length+" documents";
+  count.textContent=matches.length+" of "+documents.length+" files";
+  empty.hidden=matches.length!==0;
 }
-document.querySelectorAll("[data-doc-filter]").forEach(button=>{
+[search,category,school].forEach(el=>el.addEventListener(el===search?"input":"change",renderArchive));
+document.querySelectorAll("[data-open-school]").forEach(button=>{
   button.addEventListener("click",()=>{
-    activeFilter=button.dataset.docFilter;activeSchool="";expanded=false;
-    document.querySelectorAll("[data-doc-filter]").forEach(b=>{
-      const selected=b===button;b.classList.toggle("is-active",selected);b.setAttribute("aria-pressed",String(selected));
-    });
-    renderDocuments();
+    category.value="all";
+    school.value=button.dataset.openSchool;
+    search.value="";
+    renderArchive();
+    location.hash="archive";
   });
 });
-document.querySelectorAll("[data-school]").forEach(link=>{
-  link.addEventListener("click",()=>{
-    activeSchool=link.dataset.school;activeFilter="all";search.value="";expanded=false;
-    document.querySelectorAll("[data-doc-filter]").forEach(b=>{
-      const selected=b.dataset.docFilter==="all";b.classList.toggle("is-active",selected);b.setAttribute("aria-pressed",String(selected));
-    });
-    renderDocuments();
-  });
-});
-search.addEventListener("input",()=>{activeSchool="";expanded=false;renderDocuments();});
-more.addEventListener("click",()=>{expanded=!expanded;renderDocuments();});
 document.getElementById("year").textContent=String(new Date().getFullYear());
-renderDocuments();
+renderArchive();
