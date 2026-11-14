@@ -41,58 +41,44 @@ const rows=document.getElementById("fileRows");
 const count=document.getElementById("resultCount");
 const empty=document.getElementById("emptyMessage");
 
-function renderFiles(){
-  const query=search.value.trim().toLowerCase();
-  const filtered=documents.filter(file=>
-    (type.value==="all"||file.group===type.value)&&
-    (school.value==="all"||file.site===school.value)&&
-    [file.title,file.subtitle,file.site,file.group].join(" ").toLowerCase().includes(query)
+function renderIndex(){
+  const q=search.value.trim().toLowerCase();
+  const filtered=documents.filter(item=>
+    (type.value==="all"||item.group===type.value)&&
+    (school.value==="all"||item.site===school.value)&&
+    [item.title,item.subtitle,item.site,item.group].join(" ").toLowerCase().includes(q)
   );
+  const label={journals:"Weekly journal",activities:"Field Study activity",teaching:"Teaching output",profile:"Curriculum vitae"};
+  const entries=document.createDocumentFragment();
+  filtered.forEach((item,i)=>{
+    const link=document.createElement("a");
+    link.href=base+item.id+"/view";
+    link.target="_blank";link.rel="noopener noreferrer";
+    link.setAttribute("aria-label","Open "+item.title+" ("+item.site+") in a new tab");
 
-  rows.replaceChildren();
-  filtered.forEach(file=>{
-    const anchor=document.createElement("a");
-    anchor.href=base+file.id+"/view";
-    anchor.target="_blank";
-    anchor.rel="noopener noreferrer";
-    anchor.className="file-row";
-    anchor.setAttribute("aria-label","Open "+file.title+" — "+file.site+" in a new tab");
+    const num=document.createElement("span");
+    num.className="file-number";num.textContent=String(i+1).padStart(2,"0");
 
-    const details=document.createElement("span");
-    const category=document.createElement("span");
-    category.className="file-category";
-    category.textContent=({profile:"Profile",journals:"Weekly journal",activities:"Field Study activity",teaching:"Teaching material"})[file.group]||"Document";
-    details.append(category);
-    const title=document.createElement("strong");
-    title.className="file-title";
-    title.textContent=file.title;
-    const description=document.createElement("span");
-    description.className="file-description";
-    description.textContent=file.subtitle;
-    details.append(title,description);
+    const entry=document.createElement("span");entry.className="file-content";
+    const kind=document.createElement("span");kind.className="file-category";kind.textContent=label[item.group]||"Document";
+    const title=document.createElement("strong");title.className="file-title";title.textContent=item.title;
+    const subtitle=document.createElement("span");subtitle.className="file-description";subtitle.textContent=item.subtitle;
+    entry.append(kind,title,subtitle);
 
-    const location=document.createElement("span");
-    location.className="file-place";
-    location.textContent=file.site;
-    const arrow=document.createElement("span");
-    arrow.className="file-arrow";
-    arrow.textContent="↗";
+    const site=document.createElement("span");site.className="file-place";site.textContent=item.site;
+    const arrow=document.createElement("span");arrow.className="file-arrow";arrow.textContent="↗";
     arrow.setAttribute("aria-hidden","true");
-
-    anchor.append(details,location,arrow);
-    rows.append(anchor);
+    link.append(num,entry,site,arrow);
+    entries.append(link);
   });
-
+  rows.replaceChildren(entries);
   count.textContent=filtered.length+" of "+documents.length+" documents";
   empty.hidden=filtered.length!==0;
 }
 
-const schoolParam=new URLSearchParams(window.location.search).get("school");
-if(schoolParam&&[...school.options].some(option=>option.value===schoolParam)){
-  school.value=schoolParam;
-}
-
-search.addEventListener("input",renderFiles);
-type.addEventListener("change",renderFiles);
-school.addEventListener("change",renderFiles);
-renderFiles();
+const querySchool=new URLSearchParams(location.search).get("school");
+if(querySchool&&[...school.options].some(option=>option.value===querySchool))school.value=querySchool;
+search.addEventListener("input",renderIndex);
+type.addEventListener("change",renderIndex);
+school.addEventListener("change",renderIndex);
+renderIndex();
