@@ -184,7 +184,7 @@ function renderDocuments() {
     docGrid.append(a);
   });
   noDocuments.hidden = match.length !== 0;
-  docCount.textContent = match.length + " of " + documents.length + " verified files";
+  docCount.textContent = match.length + " of " + documents.length + " documents";
 }
 function setDocFilter(filter) {
   docFilter = filter;
