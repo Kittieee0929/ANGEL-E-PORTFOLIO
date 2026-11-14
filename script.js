@@ -233,3 +233,44 @@ document.getElementById("year").textContent = String(new Date().getFullYear());
 renderPhotos();
 renderDocuments();
 trackScroll();
+
+
+/* Compact gallery and document list, with the complete original collection available on demand. */
+const morePhotosButton=document.getElementById("morePhotos");
+const moreDocsButton=document.getElementById("moreDocs");
+let allPhotosShown=false;
+let allDocsShown=false;
+function syncPhotoView(){
+  photoGrid.classList.toggle("expanded",allPhotosShown);
+  morePhotosButton.hidden=visiblePhotos.length<=6;
+  morePhotosButton.textContent=allPhotosShown?"Show fewer photos":"Show all "+visiblePhotos.length+" photos";
+}
+morePhotosButton.addEventListener("click",()=>{
+  allPhotosShown=!allPhotosShown;
+  syncPhotoView();
+});
+document.querySelectorAll("[data-photo-filter]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    allPhotosShown=false;
+    syncPhotoView();
+  });
+});
+function syncDocView(){
+  const custom=docSearch.value.trim()!==""||docFilter!=="all";
+  docGrid.classList.toggle("expanded",allDocsShown||custom);
+  moreDocsButton.hidden=custom||docGrid.children.length<=7;
+  moreDocsButton.textContent=allDocsShown?"Show fewer documents":"Show all "+docGrid.children.length+" documents";
+}
+moreDocsButton.addEventListener("click",()=>{
+  allDocsShown=!allDocsShown;
+  syncDocView();
+});
+document.querySelectorAll("[data-doc-filter]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    allDocsShown=false;
+    syncDocView();
+  });
+});
+docSearch.addEventListener("input",syncDocView);
+syncPhotoView();
+syncDocView();
