@@ -1,19 +1,15 @@
 # Angel Marcelo Vidad — Field Study E-Portfolio
 
-A restrained, text-only academic portfolio designed for Angel Marcelo Vidad, a Bachelor of Technical-Vocational Teacher Education student at Mariano Marcos State University.
+A designed, accessible four-page e-portfolio for Angel Marcelo Vidad (BTVTED, Computer Hardware Servicing, MMSU College of Teacher Education).
 
-## Design
-- White background, muted navy-blue accents, light gray sections
-- Barlow and Source Sans 3 typography; no magazine cover, oversized display lettering, sidebar, photographs, or illustration assets
-- Clean top navigation with four straightforward web pages
-- Responsive layouts with accessible links and labeled archive filters
+## Website
+- `index.html` — introduction, learning-path diagram, overview, four learning focuses, and section navigation
+- `fieldwork.html` — two school placement profiles with expanded observation, participation, planning, and reflection descriptions
+- `teaching.html` — descriptive lesson-plan and presentation showcases, including educational purpose and topic labels
+- `documents.html` — filterable, searchable original document archive with descriptions for all 27 files
+- `styles.css` — responsive geometric/CSS illustrations, dark charcoal with lime, mint, and lavender highlights
+- `script.js` — document metadata, original file links, and searchable archive
 
-## Pages
-- `index.html` — introduction, academic details, about section, portfolio links
-- `fieldwork.html` — INCAT and MMSU Laboratory High School experiences
-- `teaching.html` — original lesson plans and demonstration materials
-- `documents.html` — searchable original document index (27 files)
+No photos or external image files appear on the pages. All CSS-only decorative motifs avoid reintroducing the previously removed photos. The legacy `assets/` folder remains untouched but is not referenced by the site.
 
-`styles.css` contains the design system. `script.js` contains the original Drive document index and filtering logic. The original files remain linked by URL. No images are loaded by the website, and the legacy `assets/` directory is not referenced.
-
-Hosted via GitHub Pages from the `main` branch root.
+The website is published on GitHub Pages from `main` / repository root. All original document URLs are preserved.
