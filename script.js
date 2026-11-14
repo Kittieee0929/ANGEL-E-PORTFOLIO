@@ -1,28 +1,5 @@
 "use strict";
 
-const originalPhotos = [
-  {src:"assets/incat-13.jpg",site:"incat",title:"A moment to celebrate",detail:"Final teaching demonstration • INCAT"},
-  {src:"assets/incat-01.jpg",site:"incat",title:"Learning by doing",detail:"Hands-on system unit activity • INCAT"},
-  {src:"assets/lhs-01.jpg",site:"lhs",title:"A community of learners",detail:"Field Study memories • MMSU LHS"},
-  {src:"assets/incat-09.jpg",site:"incat",title:"Learning in the laboratory",detail:"Classroom experience • INCAT"},
-  {src:"assets/incat-12.jpg",site:"incat",title:"Guiding learners",detail:"Technology learning activity • INCAT"},
-  {src:"assets/lhs-03.jpg",site:"lhs",title:"Supporting the classroom",detail:"Classroom documentation • MMSU LHS"},
-  {src:"assets/incat-02.jpg",site:"incat",title:"Practice makes progress",detail:"Computer hardware activity • INCAT"},
-  {src:"assets/incat-08.jpg",site:"incat",title:"Working with purpose",detail:"Hands-on practical learning • INCAT"},
-  {src:"assets/lhs-02.jpg",site:"lhs",title:"Together in the classroom",detail:"Group documentation • MMSU LHS"},
-  {src:"assets/incat-05.jpg",site:"incat",title:"Technical skills in action",detail:"Hardware practice • INCAT"},
-  {src:"assets/incat-03.jpg",site:"incat",title:"Classroom in focus",detail:"Learning session • INCAT"},
-  {src:"assets/lhs-04.jpg",site:"lhs",title:"Every observation matters",detail:"Teaching-learning environment • MMSU LHS"},
-  {src:"assets/incat-06.jpg",site:"incat",title:"An active learning space",detail:"Classroom instruction • INCAT"},
-  {src:"assets/incat-07.jpg",site:"incat",title:"Building technical confidence",detail:"Computer servicing activity • INCAT"},
-  {src:"assets/lhs-05.jpg",site:"lhs",title:"Learning through observation",detail:"Classroom activity • MMSU LHS"},
-  {src:"assets/incat-10.jpg",site:"incat",title:"Beyond the classroom",detail:"Practical learning moments • INCAT"},
-  {src:"assets/incat-11.jpg",site:"incat",title:"Applying the lesson",detail:"Learning environment • INCAT"},
-  {src:"assets/lhs-06.jpg",site:"lhs",title:"Learning alongside others",detail:"School visit documentation • MMSU LHS"},
-  {src:"assets/incat-04.jpg",site:"incat",title:"Computer laboratory sessions",detail:"Teaching assistance • INCAT"},
-  {src:"assets/lhs-07.jpg",site:"lhs",title:"An everyday lesson",detail:"Classroom learning • MMSU LHS"}
-];
-
 const base = "https://drive.google.com/file/d/";
 const documents = [
   {title:"Curriculum Vitae",subtitle:"Education, recognitions, training, and affiliations",group:"profile",site:"CV",kind:"PDF",id:"1n2Dxwf81ZKYn9kp_oWRRfUBrFf5oGsor"},
@@ -57,220 +34,63 @@ const documents = [
   {title:"Final Demonstration Presentation",subtitle:"Presentation activities for structured document formatting",group:"teaching",site:"DEMO",kind:"PDF",id:"1P7GwbWhbt0kKXqvEs7HXT1WUI832k-yc"}
 ];
 
-const photoGrid = document.getElementById("photoGrid");
-const photoCount = document.getElementById("photoCount");
-const lightbox = document.getElementById("lightbox");
-const lightboxImage = document.getElementById("lightboxImage");
-const lightboxCaption = document.getElementById("lightboxCaption");
-let photoFilter = "all";
-let visiblePhotos = originalPhotos.slice();
-let currentPhoto = 0;
 
-function renderPhotos() {
-  visiblePhotos = originalPhotos.filter(photo => photoFilter === "all" || photo.site === photoFilter);
-  photoGrid.replaceChildren();
-  visiblePhotos.forEach((photo,index) => {
-    const card = document.createElement("button");
-    card.type = "button";
-    card.className = "photo-card";
-    card.setAttribute("aria-label", "View photograph: " + photo.title);
-    const pic = document.createElement("img");
-    pic.src = photo.src;
-    pic.alt = photo.title + " — " + photo.detail;
-    pic.loading = "lazy";
-    const overlay = document.createElement("span");
-    overlay.className = "photo-overlay";
-    const heading = document.createElement("strong");
-    heading.textContent = photo.title;
-    const sub = document.createElement("span");
-    sub.textContent = photo.detail;
-    overlay.append(heading,sub);
-    card.append(pic,overlay);
-    card.addEventListener("click",() => openPhoto(index));
-    photoGrid.append(card);
+const search=document.getElementById("docSearch");
+const grid=document.getElementById("documentGrid");
+const count=document.getElementById("docCount");
+const empty=document.getElementById("noDocuments");
+const more=document.getElementById("moreDocs");
+let activeFilter="all";
+let activeSchool="";
+let expanded=false;
+function renderDocuments(){
+  const query=search.value.trim().toLowerCase();
+  const results=documents.filter(d=>
+    (activeFilter==="all"||d.group===activeFilter)&&
+    (!activeSchool||d.site===activeSchool)&&
+    [d.title,d.subtitle,d.group,d.site].join(" ").toLowerCase().includes(query)
+  );
+  grid.replaceChildren();
+  results.forEach(d=>{
+    const a=document.createElement("a");a.className="doc-card";
+    a.href=base+d.id+"/view";a.target="_blank";a.rel="noopener noreferrer";
+    a.setAttribute("aria-label","Open "+d.title+" — "+d.site+" (new tab)");
+    const top=document.createElement("div");top.className="doc-top";
+    const site=document.createElement("span");site.textContent=d.site;
+    const title=document.createElement("h3");title.textContent=d.title;
+    const subtitle=document.createElement("p");subtitle.textContent=d.subtitle;
+    const bottom=document.createElement("div");bottom.className="doc-bottom";
+    const type=document.createElement("span");type.textContent="View original "+d.kind;
+    const arrow=document.createElement("span");arrow.textContent="↗";
+    top.append(site);bottom.append(type,arrow);
+    a.append(top,title,subtitle,bottom);grid.append(a);
   });
-  photoCount.textContent = visiblePhotos.length + " photograph" + (visiblePhotos.length !== 1 ? "s" : "");
+  count.textContent=results.length+" document"+(results.length===1?"":"s")+(activeSchool?" · "+activeSchool:"");
+  empty.hidden=results.length!==0;
+  const customized=activeFilter!=="all"||activeSchool!==""||query!=="";
+  grid.classList.toggle("expanded",expanded||customized);
+  more.hidden=customized||results.length<=7;
+  more.textContent=expanded?"Show fewer documents":"Show all "+results.length+" documents";
 }
-function setPhotoFilter(filter) {
-  photoFilter = filter;
-  document.querySelectorAll("[data-photo-filter]").forEach(button => {
-    const active = button.dataset.photoFilter === filter;
-    button.classList.toggle("is-active",active);
-    button.setAttribute("aria-pressed",String(active));
-  });
-  renderPhotos();
-}
-function showPhoto() {
-  const photo = visiblePhotos[currentPhoto];
-  if (!photo) return;
-  lightboxImage.src = photo.src;
-  lightboxImage.alt = photo.title;
-  lightboxCaption.textContent = photo.title + " — " + photo.detail + " · " + (currentPhoto + 1) + " of " + visiblePhotos.length;
-}
-function openPhoto(index) {
-  currentPhoto = index;
-  showPhoto();
-  if (typeof lightbox.showModal === "function") {
-    lightbox.showModal();
-    document.body.classList.add("modal-open");
-  } else {
-    window.open(visiblePhotos[index].src,"_blank","noopener");
-  }
-}
-function closePhoto() {
-  if (lightbox.open) lightbox.close();
-  document.body.classList.remove("modal-open");
-}
-function movePhoto(direction) {
-  if (!visiblePhotos.length) return;
-  currentPhoto = (currentPhoto + direction + visiblePhotos.length) % visiblePhotos.length;
-  showPhoto();
-}
-document.querySelectorAll("[data-photo-filter]").forEach(button => {
-  button.addEventListener("click",() => setPhotoFilter(button.dataset.photoFilter));
-});
-document.getElementById("lightboxClose").addEventListener("click",closePhoto);
-document.getElementById("lightboxPrev").addEventListener("click",() => movePhoto(-1));
-document.getElementById("lightboxNext").addEventListener("click",() => movePhoto(1));
-lightbox.addEventListener("close",() => document.body.classList.remove("modal-open"));
-lightbox.addEventListener("click",e => {if (e.target === lightbox) closePhoto();});
-document.addEventListener("keydown", e => {
-  if (!lightbox.open) return;
-  if (e.key === "ArrowLeft") movePhoto(-1);
-  if (e.key === "ArrowRight") movePhoto(1);
-});
-
-let docFilter = "all";
-const docSearch = document.getElementById("docSearch");
-const docCount = document.getElementById("docCount");
-const docGrid = document.getElementById("documentGrid");
-const noDocuments = document.getElementById("noDocuments");
-
-function renderDocuments() {
-  const query = docSearch.value.trim().toLowerCase();
-  const match = documents.filter(doc => {
-    const inGroup = docFilter === "all" || doc.group === docFilter;
-    const searchable = [doc.title,doc.subtitle,doc.group,doc.site].join(" ").toLowerCase();
-    return inGroup && searchable.includes(query);
-  });
-  docGrid.replaceChildren();
-  match.forEach(doc => {
-    const a = document.createElement("a");
-    a.className = "doc-card";
-    a.href = base + doc.id + "/view";
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    a.setAttribute("aria-label","Open "+doc.title+" — "+doc.site+" (new tab)");
-    const top = document.createElement("div");
-    top.className = "doc-top";
-    const badge = document.createElement("span");
-    badge.textContent = doc.site;
-    const icon = document.createElement("span");
-    icon.className = "doc-icon";
-    icon.textContent = doc.kind;
-    top.append(badge,icon);
-    const title = document.createElement("h3");
-    title.textContent = doc.title;
-    const subtitle = document.createElement("p");
-    subtitle.textContent = doc.subtitle;
-    const bottom = document.createElement("div");
-    bottom.className = "doc-bottom";
-    const type = document.createElement("span");
-    type.textContent = "View original " + doc.kind;
-    const arrow = document.createElement("span");
-    arrow.textContent = "↗";
-    bottom.append(type,arrow);
-    a.append(top,title,subtitle,bottom);
-    docGrid.append(a);
-  });
-  noDocuments.hidden = match.length !== 0;
-  docCount.textContent = match.length + " of " + documents.length + " documents";
-}
-function setDocFilter(filter) {
-  docFilter = filter;
-  document.querySelectorAll("[data-doc-filter]").forEach(button => {
-    const active = button.dataset.docFilter === filter;
-    button.classList.toggle("is-active",active);
-    button.setAttribute("aria-pressed",String(active));
-  });
-  renderDocuments();
-}
-document.querySelectorAll("[data-doc-filter]").forEach(button => {
-  button.addEventListener("click", () => setDocFilter(button.dataset.docFilter));
-});
-docSearch.addEventListener("input",renderDocuments);
-document.querySelectorAll("[data-set-doc-filter]").forEach(a => {
-  a.addEventListener("click",() => {
-    setDocFilter(a.dataset.setDocFilter);
-    docSearch.value = a.closest(".school-card-incat") ? "INCAT" : "LHS";
+document.querySelectorAll("[data-doc-filter]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    activeFilter=button.dataset.docFilter;activeSchool="";expanded=false;
+    document.querySelectorAll("[data-doc-filter]").forEach(b=>{
+      const selected=b===button;b.classList.toggle("is-active",selected);b.setAttribute("aria-pressed",String(selected));
+    });
     renderDocuments();
   });
 });
-
-const menuToggle = document.getElementById("menuToggle");
-const siteNav = document.getElementById("siteNav");
-menuToggle.addEventListener("click",() => {
-  const open = menuToggle.getAttribute("aria-expanded") !== "true";
-  menuToggle.setAttribute("aria-expanded",String(open));
-  menuToggle.setAttribute("aria-label",open ? "Close menu" : "Open menu");
-  siteNav.classList.toggle("open",open);
+document.querySelectorAll("[data-school]").forEach(link=>{
+  link.addEventListener("click",()=>{
+    activeSchool=link.dataset.school;activeFilter="all";search.value="";expanded=false;
+    document.querySelectorAll("[data-doc-filter]").forEach(b=>{
+      const selected=b.dataset.docFilter==="all";b.classList.toggle("is-active",selected);b.setAttribute("aria-pressed",String(selected));
+    });
+    renderDocuments();
+  });
 });
-siteNav.querySelectorAll("a").forEach(link => link.addEventListener("click",() => {
-  siteNav.classList.remove("open");
-  menuToggle.setAttribute("aria-expanded","false");
-  menuToggle.setAttribute("aria-label","Open menu");
-}));
-const progress = document.getElementById("readingProgress");
-const siteHeader = document.getElementById("siteHeader");
-function trackScroll() {
-  const max = document.documentElement.scrollHeight - window.innerHeight;
-  progress.style.width = (max > 0 ? Math.min(100,(window.scrollY / max)*100) : 0) + "%";
-  siteHeader.classList.toggle("scrolled",window.scrollY > 20);
-}
-window.addEventListener("scroll",trackScroll,{passive:true});
-document.getElementById("year").textContent = String(new Date().getFullYear());
-
-renderPhotos();
+search.addEventListener("input",()=>{activeSchool="";expanded=false;renderDocuments();});
+more.addEventListener("click",()=>{expanded=!expanded;renderDocuments();});
+document.getElementById("year").textContent=String(new Date().getFullYear());
 renderDocuments();
-trackScroll();
-
-
-/* Compact gallery and document list, with the complete original collection available on demand. */
-const morePhotosButton=document.getElementById("morePhotos");
-const moreDocsButton=document.getElementById("moreDocs");
-let allPhotosShown=false;
-let allDocsShown=false;
-function syncPhotoView(){
-  photoGrid.classList.toggle("expanded",allPhotosShown);
-  morePhotosButton.hidden=visiblePhotos.length<=6;
-  morePhotosButton.textContent=allPhotosShown?"Show fewer photos":"Show all "+visiblePhotos.length+" photos";
-}
-morePhotosButton.addEventListener("click",()=>{
-  allPhotosShown=!allPhotosShown;
-  syncPhotoView();
-});
-document.querySelectorAll("[data-photo-filter]").forEach(button=>{
-  button.addEventListener("click",()=>{
-    allPhotosShown=false;
-    syncPhotoView();
-  });
-});
-function syncDocView(){
-  const custom=docSearch.value.trim()!==""||docFilter!=="all";
-  docGrid.classList.toggle("expanded",allDocsShown||custom);
-  moreDocsButton.hidden=custom||docGrid.children.length<=7;
-  moreDocsButton.textContent=allDocsShown?"Show fewer documents":"Show all "+docGrid.children.length+" documents";
-}
-moreDocsButton.addEventListener("click",()=>{
-  allDocsShown=!allDocsShown;
-  syncDocView();
-});
-document.querySelectorAll("[data-doc-filter]").forEach(button=>{
-  button.addEventListener("click",()=>{
-    allDocsShown=false;
-    syncDocView();
-  });
-});
-docSearch.addEventListener("input",syncDocView);
-syncPhotoView();
-syncDocView();
