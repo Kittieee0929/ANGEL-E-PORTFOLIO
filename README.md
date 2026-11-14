@@ -1,19 +1,16 @@
 # Angel Marcelo Vidad — Field Study E-Portfolio
 
-A responsive academic e-portfolio built using only materials in Angel's FS-VIDAD Google Drive folder.
+A clean, responsive portfolio for Angel's Field Study 1 and Field Study 2 experiences at Ilocos Norte College of Arts and Trades (INCAT) and MMSU Laboratory High School.
 
-This site documents Field Study 1 and Field Study 2 experiences at Ilocos Norte College of Arts and Trades (INCAT) and MMSU Laboratory High School (Laoag Campus), featuring authentic photo evidence, teaching demonstrations, weekly journals, learning artifacts, and a résumé summary.
+## Website sections
+About · Experience · Teaching Work · Gallery · Documents
 
-## Contents
+The site includes 20 original photographs and 27 links to original documents, with an expandable gallery and a searchable document list. Photos and document links remain from Angel's Field Study collection.
 
-- `index.html` — website, styles, and interactions (no build step)
-- `assets/` — selected original photographs and infographics from Angel's folder
-- Original PDF files remain linked from the relevant sections of the website.
+## Files
+- `index.html` — page content
+- `styles.css` — simple responsive layout
+- `script.js` — gallery, photo viewer, and document search
+- `assets/` — original photographs and infographics
 
-## Notes
-
-The Week 6–7 journal in the linked Drive folder names a different student. It is intentionally excluded from Angel's portfolio pending clarification. Only documents verified as Angel's are presented as authored work.
-
-## Publishing
-
-This is a static site intended for GitHub Pages. If Pages is not automatically enabled, set **Settings → Pages → Deploy from a branch → main / (root)** to publish it.
+To publish with GitHub Pages: **Settings → Pages → Deploy from a branch → main / (root)**.
