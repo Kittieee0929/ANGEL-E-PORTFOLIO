@@ -1,53 +1,51 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#fff9ef">
-<meta name="description" content="Search original Field Study 1 and 2 submitted journals, activities and teaching documents from Angel Marcelo Vidad.">
-<meta property="og:title" content="Document Archive | Angel Marcelo Vidad">
-<meta property="og:description" content="Search original Field Study 1 and 2 submitted journals, activities and teaching documents from Angel Marcelo Vidad.">
-<meta property="og:type" content="website">
-<title>Document Archive | Angel Marcelo Vidad</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Search original Field Study journals, activities, lesson plans, and submissions by Angel Marcelo Vidad.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Documents | Angel Marcelo Vidad">
+  <title>Documents | Angel Marcelo Vidad</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
-<a href="#content" class="skip">Skip to content</a>
+<a class="skip-link" href="#main">Skip to main content</a>
 <header class="site-header">
-  <div class="edition-strip"><span>FIELD STUDY 1 + 2</span><span>MARIANO MARCOS STATE UNIVERSITY / 2026</span></div>
-  <div class="nav-wrap">
-    <a href="index.html" class="site-brand" aria-label="Angel Marcelo Vidad home">angel<span class="brand-dot">.</span><small>FIELD NOTES</small></a>
-    <nav class="top-nav" aria-label="Main navigation">
+  <div class="header-inner">
+    <a href="index.html" class="identity" aria-label="Angel Marcelo Vidad, portfolio home">
+      <strong>Angel Marcelo Vidad</strong><span>Field Study E-Portfolio</span>
+    </a>
+    <nav class="primary-nav" aria-label="Website navigation">
       <a href="index.html" >Home</a>
-      <a href="fieldwork.html" >Fieldwork</a>
-      <a href="teaching.html" >Teaching</a>
+      <a href="fieldwork.html" >Field Study</a>
+      <a href="teaching.html" >Teaching Work</a>
       <a href="documents.html" aria-current="page">Documents</a>
     </nav>
   </div>
 </header>
-<main id="content">
-  <div class="chapter-strip"><span>CHAPTER 03</span><span>ORIGINAL SUBMISSIONS</span></div>
-  <div class="chapter-container">
-    <div class="chapter-heading archive-heading"><div class="chapter-stamp">THE COMPLETE COLLECTION</div><h1>Document<br>archive<span class="rust-dot">.</span></h1><p>Browse and open original submitted documents. Select a category or school, or type a title to find a file.</p></div>
-    <div class="archive-toolbar">
-      <label><span>SEARCH THE ARCHIVE</span><input id="fileSearch" type="search" placeholder="Search by title or topic…" autocomplete="off"></label>
-      <label><span>FILE TYPE</span><select id="typeFilter"><option value="all">All categories</option><option value="journals">Weekly journals</option><option value="activities">FS activities</option><option value="teaching">Teaching files</option><option value="profile">Curriculum vitae</option></select></label>
-      <label><span>LOCATION</span><select id="schoolFilter"><option value="all">All locations</option><option value="INCAT">INCAT</option><option value="MMSU LHS">MMSU LHS</option><option value="DEMO">Teaching demo</option><option value="CV">Profile</option></select></label>
+<main id="main" class="inner-main">
+  <div class="content-area">
+    <div class="page-heading">
+      <p class="eyebrow">DOCUMENTS / 03</p>
+      <h1>Document Library</h1>
+      <p>Browse original submissions from Field Study 1 and 2. Search by title or filter by category and school. Files open through Google Drive.</p>
     </div>
-    <div class="archive-table-head"><span id="resultCount" aria-live="polite">27 files</span><span>ORIGINAL FILES · OPENS IN NEW TAB ↗</span></div>
-    <div id="fileRows" class="file-rows" aria-live="polite"></div>
-    <p id="emptyMessage" class="empty-message" hidden>No matching documents. Try a different search or location.</p>
-    <div class="archive-footnote">Original files are linked to their existing Google Drive locations.</div>
+    <form class="library-tools" role="search" onsubmit="return false">
+      <label class="search-input"><span>Search documents</span><input id="fileSearch" type="search" autocomplete="off" placeholder="Search by title or topic"></label>
+      <label><span>Category</span><select id="typeFilter"><option value="all">All categories</option><option value="journals">Weekly journals</option><option value="activities">Field Study activities</option><option value="teaching">Teaching materials</option><option value="profile">Curriculum vitae</option></select></label>
+      <label><span>School</span><select id="schoolFilter"><option value="all">All schools</option><option value="INCAT">INCAT</option><option value="MMSU LHS">MMSU LHS</option><option value="DEMO">Teaching demo</option><option value="CV">Profile</option></select></label>
+    </form>
+    <div class="library-heading"><h2>Available files</h2><span id="resultCount" aria-live="polite">27 documents</span></div>
+    <div class="file-list" id="fileRows" aria-live="polite"></div>
+    <p id="emptyMessage" class="empty-message" hidden>No documents match your filters.</p>
+    <p class="library-note">Documents are linked to their original Google Drive files.</p>
   </div>
 </main>
-<footer class="site-footer">
-  <span>© <span id="year">2026</span> Angel Marcelo Vidad</span>
-  <span>Field Study 1 &amp; 2 · MMSU College of Teacher Education</span>
-  <a href="mailto:angelmarcelovidad05@gmail.com">Get in touch ↗</a>
-</footer>
-<script>document.getElementById("year").textContent=new Date().getFullYear();</script>
-<script src="script.js" defer></script>
+<footer class="site-footer"><div class="footer-inner"><span>Angel Marcelo Vidad</span><span>Mariano Marcos State University · Field Study 1 &amp; 2</span><span>2026</span></div></footer>
+<script src="script.js?v=5" defer></script>
 </body></html>
