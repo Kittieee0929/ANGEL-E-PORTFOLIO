@@ -1,19 +1,19 @@
-# Angel Marcelo Vidad — Field Notes
+# Angel Marcelo Vidad — Field Study E-Portfolio
 
-Completely rebuilt as a **four-page, text-only academic portfolio** with a warm coral/apricot print-journal identity, Bricolage Grotesque and DM Sans typography, and a top navigation bar.
+A restrained, text-only academic portfolio designed for Angel Marcelo Vidad, a Bachelor of Technical-Vocational Teacher Education student at Mariano Marcos State University.
 
-This version is intentionally different from the previous one-page and dark-sidebar designs. It uses a magazine-style journal cover on the homepage, editorial chapter layouts for the two content pages, and a searchable flat-file archive.
+## Design
+- White background, muted navy-blue accents, light gray sections
+- Barlow and Source Sans 3 typography; no magazine cover, oversized display lettering, sidebar, photographs, or illustration assets
+- Clean top navigation with four straightforward web pages
+- Responsive layouts with accessible links and labeled archive filters
 
-## Website pages
-- `index.html` — front cover, introduction, and reading guide
-- `fieldwork.html` — INCAT and MMSU LHS classroom experiences
-- `teaching.html` — original lesson plans and presentation
-- `documents.html` — all 27 source-linked documents, filterable by category and location
+## Pages
+- `index.html` — introduction, academic details, about section, portfolio links
+- `fieldwork.html` — INCAT and MMSU Laboratory High School experiences
+- `teaching.html` — original lesson plans and demonstration materials
+- `documents.html` — searchable original document index (27 files)
 
-## Other files
-- `styles.css` — fresh responsive design system
-- `script.js` — original document index and accessible file filters
+`styles.css` contains the design system. `script.js` contains the original Drive document index and filtering logic. The original files remain linked by URL. No images are loaded by the website, and the legacy `assets/` directory is not referenced.
 
-No images, photos, or illustrations are displayed or loaded by these pages. The existing assets folder is unused and retained in repository storage. The original Google Drive links and document index are preserved.
-
-Publish from `main` / root with GitHub Pages.
+Hosted via GitHub Pages from the `main` branch root.
